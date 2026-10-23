@@ -1,0 +1,13 @@
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+defaultRules:
+  rules:
+    k8sContainerCpuUsageSecondsTotal: false
+    k8sContainerMemoryWorkingSetBytes: false

@@ -1,0 +1,35 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: custom-container-rules
+  namespace: monitoring
+  labels:
+    release: kps
+spec:
+  groups:
+    - name: custom.container.rules
+      rules:
+        - record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate
+          expr: |
+            label_replace(
+              sum by (namespace, pod, node) (
+                irate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", pod!="", container="", id!~".*scope"}[5m])
+              ),
+              "container", "pod", "pod", ".*"
+            )
+        - record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate5m
+          expr: |
+            label_replace(
+              sum by (namespace, pod, node) (
+                rate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", pod!="", container="", id!~".*scope"}[5m])
+              ),
+              "container", "pod", "pod", ".*"
+            )
+        - record: node_namespace_pod_container:container_memory_working_set_bytes
+          expr: |
+            label_replace(
+              sum by (namespace, pod, node) (
+                container_memory_working_set_bytes{job="kubelet", metrics_path="/metrics/cadvisor", pod!="", container="", id!~".*scope"}
+              ),
+              "container", "pod", "pod", ".*"
+            )
