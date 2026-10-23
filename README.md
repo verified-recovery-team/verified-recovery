@@ -65,8 +65,9 @@ Install Python packages only inside the venv.
 ## Phase 1 status
 
 - [x] Environment setup
-- [ ] Deploy Online Boutique
-- [ ] Telemetry (Prometheus, Grafana, OpenTelemetry)
+- [x] Deploy Online Boutique
+- [x] Prometheus and Grafana (telemetry/values.yaml, telemetry/custom-rules.yaml)
+- [ ] OpenTelemetry tracing
 - [ ] Orchestrator skeleton and system interfaces
 - [ ] Fault injection smoke test
 - [ ] Load generation and baseline
