@@ -1,12 +1,9 @@
-from fastapi import APIRouter
-from orchestrator.app.integrations.kubernetes import KubernetesIntegration
+from fastapi import APIRouter, Request
+
 
 router = APIRouter()
 
 
-k8s = KubernetesIntegration()
-
-
 @router.get("/pods")
-def get_pods(namespace: str = "default"):
-    return k8s.list_pods(namespace=namespace)
+def get_pods(request: Request, namespace: str = "default"):
+    return request.app.state.kubernetes.list_pods(namespace=namespace)
