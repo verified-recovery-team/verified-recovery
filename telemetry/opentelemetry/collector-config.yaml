@@ -1,0 +1,83 @@
+receivers:
+  otlp/frontend:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+  otlp/checkout:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  resource/frontend:
+    attributes:
+      - key: service.name
+        value: frontend
+        action: upsert
+
+  resource/checkout:
+    attributes:
+      - key: service.name
+        value: checkoutservice
+        action: upsert
+
+  batch:
+
+connectors:
+  span_metrics/frontend:
+    namespace: traces.span.metrics
+    resource_metrics_key_attributes:
+      - service.name
+    histogram:
+      unit: ms
+    metrics_flush_interval: 15s
+    aggregation_cardinality_limit: 1000
+
+  span_metrics/checkout:
+    namespace: traces.span.metrics
+    resource_metrics_key_attributes:
+      - service.name
+    histogram:
+      unit: ms
+    metrics_flush_interval: 15s
+    aggregation_cardinality_limit: 1000
+
+exporters:
+  prometheus:
+    endpoint: 0.0.0.0:8889
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions:
+    - health_check
+  pipelines:
+    traces/frontend:
+      receivers:
+        - otlp/frontend
+      processors:
+        - resource/frontend
+        - batch
+      exporters:
+        - span_metrics/frontend
+
+    traces/checkout:
+      receivers:
+        - otlp/checkout
+      processors:
+        - resource/checkout
+        - batch
+      exporters:
+        - span_metrics/checkout
+
+    metrics:
+      receivers:
+        - span_metrics/frontend
+        - span_metrics/checkout
+      processors:
+        - batch
+      exporters:
+        - prometheus

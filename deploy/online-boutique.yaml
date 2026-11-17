@@ -220,6 +220,10 @@ spec:
             value: "currencyservice:7000"
           - name: CART_SERVICE_ADDR
             value: "cartservice:7070"
+          - name: ENABLE_TRACING
+            value: "1"
+          - name: COLLECTOR_SERVICE_ADDR
+            value: "opentelemetrycollector.monitoring.svc.cluster.local:4318"
           resources:
             requests:
               cpu: 100m
@@ -555,6 +559,10 @@ spec:
           # As part of an optional Google Cloud demo, you can run an optional microservice called the "packaging service".
           # - name: PACKAGING_SERVICE_URL
           #   value: "" # This value would look like "http://123.123.123"
+          - name: ENABLE_TRACING
+            value: "1"
+          - name: COLLECTOR_SERVICE_ADDR
+            value: "opentelemetrycollector.monitoring.svc.cluster.local:4317"
           resources:
             requests:
               cpu: 100m
